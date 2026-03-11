@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import io
 import re
-from typing import Iterable
+from typing import Callable, Iterable
 
 import pandas as pd
 from openpyxl import Workbook
@@ -39,6 +39,9 @@ MAPEO_CECO = {
     "62": "102",
     "63": "103",
 }
+
+
+ProgressCallback = Callable[[int, int, str], None]
 
 
 def leer_texto_bytes(data: bytes) -> str:
@@ -150,7 +153,7 @@ def parsear_txt_contenido(texto: str, nombre_archivo: str) -> pd.DataFrame:
             cta = ""
             ceco = ""
             observacion = ""
-            total_base = debe
+            total_base = debe if debe != 0 else 0.0
 
         registros.append(
             {
@@ -176,15 +179,25 @@ def parsear_txt_contenido(texto: str, nombre_archivo: str) -> pd.DataFrame:
     return pd.DataFrame(registros)
 
 
-def consolidar_archivos(archivos: Iterable) -> pd.DataFrame:
+def consolidar_archivos(archivos: Iterable, progress_callback: ProgressCallback | None = None) -> pd.DataFrame:
     marcos = []
-    for archivo in archivos:
+    archivos_list = list(archivos)
+    total = len(archivos_list)
+
+    for i, archivo in enumerate(archivos_list, start=1):
+        if progress_callback:
+            progress_callback(i - 1, total, getattr(archivo, "name", f"archivo_{i}.txt"))
+
         data = archivo.getvalue() if hasattr(archivo, "getvalue") else archivo.read()
         texto = leer_texto_bytes(data)
         nombre = getattr(archivo, "name", "archivo.txt")
         df = parsear_txt_contenido(texto, nombre)
         if not df.empty:
             marcos.append(df)
+
+        if progress_callback:
+            progress_callback(i, total, nombre)
+
     if not marcos:
         return pd.DataFrame()
     return pd.concat(marcos, ignore_index=True)
