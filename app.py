@@ -34,21 +34,21 @@ c3.metric("Provisión", f"{len(hojas['Provisión']):,}")
 c4.metric("CeCos consolidados", f"{len(hojas['Totales_CeCo']):,}")
 
 st.subheader("Resumen")
-st.dataframe(resumen, use_container_width=True, hide_index=True)
+st.dataframe(resumen, width="stretch", hide_index=True)
 
 tab1, tab2, tab3, tab4 = st.tabs(["Gasto", "Provisión", "Totales_Cuenta", "Totales_CeCo"])
 
 with tab1:
-    st.dataframe(hojas["Gasto"], use_container_width=True, hide_index=True)
+    st.dataframe(hojas["Gasto"], width="stretch", hide_index=True)
 
 with tab2:
-    st.dataframe(hojas["Provisión"], use_container_width=True, hide_index=True)
+    st.dataframe(hojas["Provisión"], width="stretch", hide_index=True)
 
 with tab3:
-    st.dataframe(hojas["Totales_Cuenta"], use_container_width=True, hide_index=True)
+    st.dataframe(hojas["Totales_Cuenta"], width="stretch", hide_index=True)
 
 with tab4:
-    st.dataframe(hojas["Totales_CeCo"], use_container_width=True, hide_index=True)
+    st.dataframe(hojas["Totales_CeCo"], width="stretch", hide_index=True)
 
 excel_bytes = a_excel_bytes(hojas, resumen=resumen)
 
@@ -72,4 +72,3 @@ with st.expander("Lógica aplicada"):
         - **Totales_CeCo** consolida solo los registros de Gasto por CeCo.
         """
     )
-
