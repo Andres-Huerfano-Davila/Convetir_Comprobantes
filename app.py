@@ -12,7 +12,63 @@ st.set_page_config(page_title="Gasto SAP PCP0", page_icon="📄", layout="wide")
 BASE_DIR = Path(__file__).resolve().parent
 PDF_PATH = BASE_DIR / "Instructivo.pdf"
 
+st.markdown(
+    """
+    <style>
+        .stApp {
+            background: linear-gradient(180deg, #fff8f2 0%, #fff1e6 100%);
+        }
+        .block-container {
+            padding-top: 1.4rem;
+            padding-bottom: 1rem;
+        }
+        [data-testid="stSidebar"] {
+            background: #fff3e6;
+        }
+        h1, h2, h3 {
+            color: #9a4b00;
+        }
+        div[data-testid="stMetric"] {
+            background: rgba(255,255,255,0.72);
+            border: 1px solid #ffd2ad;
+            border-radius: 14px;
+            padding: 0.4rem 0.8rem;
+        }
+        div.stButton > button[kind="primary"] {
+            background: #f28c28;
+            border: 1px solid #f28c28;
+            color: white;
+        }
+        div.stButton > button[kind="primary"]:hover {
+            background: #dd7d1f;
+            border-color: #dd7d1f;
+            color: white;
+        }
+        div.stDownloadButton > button {
+            border: 1px solid #f28c28;
+            color: #9a4b00;
+        }
+        .marca-app {
+            margin-top: 0.3rem;
+            margin-bottom: 0.8rem;
+            color: #b25a00;
+            font-weight: 600;
+        }
+        .footer-jmc {
+            text-align: center;
+            margin-top: 1.2rem;
+            padding: 0.7rem 0 0.2rem 0;
+            color: #a14e00;
+            font-weight: 600;
+            border-top: 1px solid #ffd2ad;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("📄 Generador de Gasto / Provisión desde SAP PCP0")
+st.markdown('<div class="marca-app">Creado por Andrés Huérfano Dávila - Nómina JMC</div>', unsafe_allow_html=True)
 st.caption(
     "Carga uno o varios archivos TXT, XLSX o XLS exportados desde SAP PCP0 y genera un Excel con Gasto, Provisión, Totales por Cuenta y Totales por CeCo."
 )
@@ -22,10 +78,11 @@ if "resultado" not in st.session_state:
 
 with st.sidebar:
     st.subheader("Opciones")
+    st.caption("Creado por Andrés Huérfano Dávila - Nómina JMC")
     preview_limit = st.number_input(
         "Filas de vista previa por hoja",
         min_value=10,
-        max_value=50000,
+        max_value=5000,
         value=100,
         step=10,
         help="Solo afecta lo que ves en pantalla. El Excel se genera completo.",
@@ -115,6 +172,7 @@ with manual_tab:
 with uso_tab:
     if not resultado:
         st.info("Carga tus archivos y pulsa 'Procesar archivos'.")
+        st.markdown('<div class="footer-jmc">Creado por Andrés Huérfano Dávila - Nómina JMC</div>', unsafe_allow_html=True)
         st.stop()
 
     meta = resultado["meta"]
@@ -152,6 +210,7 @@ with uso_tab:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             width="stretch",
         )
+        st.markdown('<div class="footer-jmc">Creado por Andrés Huérfano Dávila - Nómina JMC</div>', unsafe_allow_html=True)
         st.stop()
 
     if meta["gasto_truncado"] or meta["provision_truncado"]:
@@ -201,3 +260,4 @@ with uso_tab:
             """
         )
 
+    st.markdown('<div class="footer-jmc">Creado por Andrés Huérfano Dávila - Nómina JMC</div>', unsafe_allow_html=True)
