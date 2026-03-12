@@ -24,10 +24,10 @@ with st.sidebar:
     st.subheader("Opciones")
     preview_limit = st.number_input(
         "Filas de vista previa por hoja",
-        min_value=100,
-        max_value=5000,
-        value=1000,
-        step=100,
+        min_value=10,
+        max_value=50000,
+        value=100,
+        step=10,
         help="Solo afecta lo que ves en pantalla. El Excel se genera completo.",
     )
     st.info(
