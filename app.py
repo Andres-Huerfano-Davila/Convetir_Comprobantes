@@ -200,3 +200,4 @@ with uso_tab:
             - Si el TXT no fue exportado en formato correcto, la app lo reporta en `Incidencias`.
             """
         )
+
