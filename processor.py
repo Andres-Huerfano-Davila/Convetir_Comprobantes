@@ -32,7 +32,7 @@ COLUMNAS_BASE = [
 
 COLUMNAS_GASTO = COLUMNAS_BASE + ["cta", "ceco", "Observación"]
 COLUMNAS_PROVISION = COLUMNAS_BASE
-COLUMNAS_TOTALES_CUENTA = ["Cuenta", "Nombre cuenta", "Tipo", "Total Impte.Debe", "Cantidad registros"]
+COLUMNAS_TOTALES_CUENTA = ["Cuenta", "Nombre cuenta", "Tipo", "Total Neto (Debe - Haber)", "Cantidad registros"]
 COLUMNAS_TOTALES_CECO = ["CeCo", "Tipo", "Total Impte.Debe", "Cantidad registros"]
 COLUMNAS_RESUMEN = ["Métrica", "Valor"]
 COLUMNAS_INCIDENCIAS = ["Archivo", "Estado", "Detalle"]
@@ -438,8 +438,10 @@ def process_archivos(
                 ceco_total = extraer_ceco_completo(imputacion)
                 tipo = "Gasto" if ceco_total else "Provisión"
 
+                neto_movimiento = round(debe - haber, 2)
+
                 if tipo == "Gasto":
-                    debe_salida = round(debe - haber, 2)
+                    debe_salida = neto_movimiento
                     haber_salida = haber if haber != 0 else None
                     cta = cuenta_num[:2] if cuenta_num else ""
                     observacion = construir_observacion(cta, ceco_validacion)
@@ -459,7 +461,7 @@ def process_archivos(
                     _append_preview(gasto_preview, row, preview_limit)
                     total_gasto += 1
                     suma_gasto += debe_salida
-                    total_base = debe_salida
+                    total_base = neto_movimiento
                     totales_ceco[(ceco_total, tipo)][0] += debe_salida
                     totales_ceco[(ceco_total, tipo)][1] += 1
                 else:
@@ -478,7 +480,7 @@ def process_archivos(
                     _append_preview(provision_preview, row, preview_limit)
                     total_provision += 1
                     suma_provision += debe if debe != 0 else 0.0
-                    total_base = debe if debe != 0 else 0.0
+                    total_base = neto_movimiento
 
                 totales_cuenta[(cuenta_num, nombre_cuenta, tipo)][0] += total_base
                 totales_cuenta[(cuenta_num, nombre_cuenta, tipo)][1] += 1
